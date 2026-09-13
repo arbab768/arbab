@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { 
   ShieldCheck, 
   MapPin, 
@@ -9,7 +9,11 @@ import {
   Microscope,
   Sparkles,
   ArrowRight,
-  ExternalLink
+  ExternalLink,
+  Camera,
+  Maximize2,
+  RefreshCw,
+  Check
 } from "lucide-react";
 import { ARBAB_PROFILE } from "../data/profileData";
 
@@ -18,7 +22,84 @@ interface HeroProps {
   onOpenConsultation: () => void;
 }
 
+type FramingMode = "focus-face" | "centered" | "full-fit";
+
 export const Hero: React.FC<HeroProps> = ({ onNavigate, onOpenConsultation }) => {
+  // Candidate image sources in priority order:
+  // 1. Direct GitHub URL from public repository: https://raw.githubusercontent.com/arbab768/arbab/main/public/photos/IMG_8075.JPG
+  // 2. Local public repository path: /photos/IMG_8075.JPG
+  // 3. Alternative GitHub URL: https://raw.githubusercontent.com/arbab768/arbab/main/photos/IMG_8075.JPG
+  // 4. Bundled fallback
+  const directGithubUrl = "https://raw.githubusercontent.com/arbab768/arbab/main/public/photos/IMG_8075.JPG";
+  const localPhotoUrl = "/photos/IMG_8075.JPG";
+  const altGithubUrl = "https://raw.githubusercontent.com/arbab768/arbab/main/photos/IMG_8075.JPG";
+  const bundledFallback = ARBAB_PROFILE.heroImageFallback || "/src/assets/images/arbab_portrait_1789319098277.jpg";
+
+  const [currentSrc, setCurrentSrc] = useState<string>(() => {
+    return localStorage.getItem("arbab_hero_photo_custom") || directGithubUrl;
+  });
+  const [attemptIndex, setAttemptIndex] = useState<number>(0);
+  const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+  const [framingMode, setFramingMode] = useState<FramingMode>("focus-face");
+  const [showFramingMenu, setShowFramingMenu] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const fallbackList = [
+    directGithubUrl,
+    localPhotoUrl,
+    altGithubUrl,
+    bundledFallback
+  ];
+
+  const handleImageError = () => {
+    const nextIndex = attemptIndex + 1;
+    if (nextIndex < fallbackList.length) {
+      setAttemptIndex(nextIndex);
+      setCurrentSrc(fallbackList[nextIndex]);
+    }
+  };
+
+  const handleCustomUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          const resultStr = event.target.result as string;
+          setCurrentSrc(resultStr);
+          setImageLoaded(true);
+          try {
+            localStorage.setItem("arbab_hero_photo_custom", resultStr);
+          } catch {
+            // Storage quota warning - safe to ignore
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const resetToGithub = () => {
+    localStorage.removeItem("arbab_hero_photo_custom");
+    setAttemptIndex(0);
+    setCurrentSrc(directGithubUrl);
+    setImageLoaded(false);
+  };
+
+  // Determine styling class based on framing
+  const getFramingClass = () => {
+    switch (framingMode) {
+      case "focus-face":
+        return "w-full h-full object-cover object-[center_18%]";
+      case "centered":
+        return "w-full h-full object-cover object-center";
+      case "full-fit":
+        return "w-full h-full object-contain object-center bg-slate-950";
+      default:
+        return "w-full h-full object-cover object-[center_18%]";
+    }
+  };
+
   return (
     <section className="relative overflow-hidden bg-radial from-emerald-50/70 via-slate-50 to-white py-12 lg:py-20 border-b border-slate-200/80">
       
@@ -123,27 +204,136 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate, onOpenConsultation }) =>
               <div className="absolute -inset-2 bg-gradient-to-tr from-emerald-500/20 to-teal-400/20 rounded-3xl blur-xl" />
 
               {/* Photo Frame */}
-              <div className="relative rounded-2xl overflow-hidden bg-white border border-slate-200/90 shadow-xl">
+              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-900 border border-slate-200/90 shadow-2xl ring-1 ring-slate-900/5 group">
                 
-                {/* Photo of Arbab Mukhtiar */}
-                <div className="relative aspect-4/5 w-full bg-slate-100 overflow-hidden">
+                {/* Hidden File Input for Direct Local Image Selection */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleCustomUpload}
+                  accept="image/*"
+                  className="hidden"
+                  aria-label="Upload photo"
+                />
+
+                {/* Top Control Bar */}
+                <div className="absolute top-3 inset-x-3 z-20 flex items-center justify-between pointer-events-auto">
+                  {/* Photo Info Pill */}
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-950/70 text-slate-200 backdrop-blur-md border border-white/10 shadow-xs">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>IMG_8075.JPG</span>
+                  </span>
+
+                  {/* Right Action Tools: Framing & Upload */}
+                  <div className="flex items-center gap-1.5 bg-slate-950/70 backdrop-blur-md p-1 rounded-xl border border-white/10 shadow-xs">
+                    {/* Framing Mode Button */}
+                    <button
+                      type="button"
+                      onClick={() => setShowFramingMenu(!showFramingMenu)}
+                      className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/15 transition-colors text-xs flex items-center gap-1"
+                      title="Adjust photo framing (Face focus / Centered / Fit)"
+                      aria-label="Adjust framing"
+                    >
+                      <Maximize2 className="w-3.5 h-3.5" />
+                    </button>
+
+                    {/* Direct Upload / Replace Photo */}
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/15 transition-colors text-xs flex items-center gap-1"
+                      title="Choose another photo from device"
+                      aria-label="Choose photo from device"
+                    >
+                      <Camera className="w-3.5 h-3.5" />
+                    </button>
+
+                    {/* Reset Button if custom override is active */}
+                    {localStorage.getItem("arbab_hero_photo_custom") && (
+                      <button
+                        type="button"
+                        onClick={resetToGithub}
+                        className="p-1.5 rounded-lg text-amber-300 hover:text-amber-200 hover:bg-white/15 transition-colors text-xs"
+                        title="Reset to GitHub image"
+                        aria-label="Reset to GitHub photo"
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Framing Mode Dropdown Menu */}
+                {showFramingMenu && (
+                  <div className="absolute top-12 right-3 z-30 bg-slate-900/95 backdrop-blur-md border border-slate-700/80 rounded-xl p-1.5 shadow-xl text-left w-36 animate-in fade-in zoom-in-95 duration-150">
+                    <p className="text-[10px] font-bold text-slate-400 px-2 py-1 uppercase tracking-wider">Framing Sizing</p>
+                    <button
+                      type="button"
+                      onClick={() => { setFramingMode("focus-face"); setShowFramingMenu(false); }}
+                      className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                        framingMode === "focus-face" ? "bg-emerald-700 text-white font-semibold" : "text-slate-300 hover:bg-slate-800"
+                      }`}
+                    >
+                      <span>Focus Face</span>
+                      {framingMode === "focus-face" && <Check className="w-3 h-3" />}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setFramingMode("centered"); setShowFramingMenu(false); }}
+                      className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                        framingMode === "centered" ? "bg-emerald-700 text-white font-semibold" : "text-slate-300 hover:bg-slate-800"
+                      }`}
+                    >
+                      <span>Centered</span>
+                      {framingMode === "centered" && <Check className="w-3 h-3" />}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setFramingMode("full-fit"); setShowFramingMenu(false); }}
+                      className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                        framingMode === "full-fit" ? "bg-emerald-700 text-white font-semibold" : "text-slate-300 hover:bg-slate-800"
+                      }`}
+                    >
+                      <span>Fit Whole Photo</span>
+                      {framingMode === "full-fit" && <Check className="w-3 h-3" />}
+                    </button>
+                  </div>
+                )}
+                
+                {/* Photo of Arbab Mukhtiar with 3:4 Native Aspect Ratio Sizing Optimization */}
+                <div className="relative aspect-[3/4] w-full max-h-[580px] bg-slate-950 overflow-hidden flex items-center justify-center">
+                  
+                  {/* Shimmer skeleton while loading */}
+                  {!imageLoaded && (
+                    <div className="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center gap-2 z-0 animate-pulse">
+                      <div className="w-8 h-8 rounded-full border-2 border-emerald-500/30 border-t-emerald-400 animate-spin" />
+                      <span className="text-xs text-slate-400 font-medium">Optimizing IMG_8075...</span>
+                    </div>
+                  )}
+
                   <img
-                    src={ARBAB_PROFILE.heroImage}
+                    key={currentSrc}
+                    src={currentSrc}
                     alt="Arbab Mukhtiar, Quality Assurance Officer at Murree Brewery Co. and Food Technologist"
-                    className="w-full h-full object-cover object-top"
+                    className={`${getFramingClass()} transition-all duration-500 select-none ${
+                      imageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-105"
+                    }`}
                     referrerPolicy="no-referrer"
                     loading="eager"
+                    decoding="async"
+                    onLoad={() => setImageLoaded(true)}
+                    onError={handleImageError}
                   />
                   
-                  {/* Subtle Gradient overlay at bottom of image */}
-                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent flex items-end p-4">
+                  {/* Subtle Gradient overlay at bottom of image for high-contrast typography */}
+                  <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent flex items-end p-4 sm:p-5 z-10 pointer-events-none">
                     <div className="text-white">
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-300 tracking-wide uppercase">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-300 tracking-wide uppercase">
                         <Microscope className="w-3.5 h-3.5" />
                         Murree Brewery QA Laboratory
                       </div>
-                      <p className="text-sm font-medium text-slate-100">
-                        In-line verification & microbiological surveillance
+                      <p className="text-xs sm:text-sm font-medium text-slate-200 mt-0.5">
+                        In-line verification, microbiological surveillance & HACCP
                       </p>
                     </div>
                   </div>
