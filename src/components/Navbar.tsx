@@ -4,39 +4,30 @@ import {
   Menu, 
   X, 
   BookOpen, 
-  Download, 
   Briefcase, 
   Award, 
   Calculator, 
-  Lock, 
-  Search, 
   Mail,
   FileText,
   ChevronRight,
-  Sparkles,
-  MapPin,
-  ExternalLink
+  MapPin
 } from "lucide-react";
 import { ARBAB_PROFILE } from "../data/profileData";
 
 interface NavbarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  onOpenSearch: () => void;
-  isLoggedIn: boolean;
-  onOpenPortal: () => void;
+  isLoggedIn?: boolean;
+  onOpenPortal?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   activeTab,
   setActiveTab,
-  onOpenSearch,
-  isLoggedIn,
-  onOpenPortal
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Grouped Navigation Structure
+  // Grouped Navigation Structure for Mobile Drawer
   const navCategories = [
     {
       title: "Portfolio & Industrial Role",
@@ -44,86 +35,69 @@ export const Navbar: React.FC<NavbarProps> = ({
         { 
           id: "home", 
           label: "Overview", 
-          shortLabel: "Overview",
           desc: "Professional bio & core competencies",
           icon: ShieldCheck 
         },
         { 
           id: "experience", 
           label: "Murree Brewery QA", 
-          shortLabel: "Brewery QA",
           desc: "2.5+ years of in-line beverage QA & audits",
           icon: Briefcase,
-          badge: "Active Role"
+          badge: "Active"
         },
         { 
           id: "certifications", 
           label: "Certifications", 
-          shortLabel: "Certifications",
           desc: "BS Degree, HACCP & ISO 22000 accreditations",
           icon: Award 
         },
       ]
     },
     {
-      title: "Technical Knowledge & Standards",
+      title: "Technical Knowledge",
       items: [
         { 
           id: "guides", 
           label: "Safety Guides", 
-          shortLabel: "Safety Guides",
           desc: "HACCP, CIP & beverage processing SOPs",
           icon: BookOpen 
         },
         { 
-          id: "resources", 
-          label: "SOP Library", 
-          shortLabel: "Resources",
-          desc: "Downloadable checklists, templates & logs",
-          icon: Download,
-          badge: "Free"
-        },
-        { 
           id: "blog", 
           label: "Technical Blog", 
-          shortLabel: "Blog",
           desc: "Industry articles & food science perspectives",
           icon: FileText 
         },
       ]
     },
     {
-      title: "Engineering Tools & Contact",
+      title: "Tools & Advisory",
       items: [
         { 
           id: "tools", 
           label: "QA Calculators & AI", 
-          shortLabel: "Calculators",
           desc: "Pasteurization (PU), Brix & CIP dosing tools",
           icon: Calculator,
           badge: "Interactive"
         },
         { 
           id: "contact", 
-          label: "Contact", 
-          shortLabel: "Contact",
-          desc: "Advisory, student mentorship & inquiries",
+          label: "Contact & Consultation", 
+          desc: "Direct advisory & inquiries",
           icon: Mail 
         },
       ]
     }
   ];
 
-  // Flat list for desktop navbar
+  // Streamlined links for desktop navigation bar
   const flatNavLinks = [
     { id: "home", label: "Overview", icon: ShieldCheck },
     { id: "experience", label: "Brewery QA", icon: Briefcase },
     { id: "certifications", label: "Certifications", icon: Award },
     { id: "guides", label: "Safety Guides", icon: BookOpen },
-    { id: "resources", label: "Resources", icon: Download },
     { id: "blog", label: "Blog", icon: FileText },
     { id: "tools", label: "Calculators", icon: Calculator },
-    { id: "contact", label: "Contact", icon: Mail },
   ];
 
   const handleNavClick = (id: string) => {
@@ -160,12 +134,12 @@ export const Navbar: React.FC<NavbarProps> = ({
     <>
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20 gap-2 sm:gap-4">
+          <div className="flex items-center justify-between h-16 sm:h-18 lg:h-20 gap-3">
             
-            {/* Brand & Identity (Guaranteed no-wrap and fixed layout) */}
+            {/* Brand & Identity */}
             <button 
               onClick={() => handleNavClick("home")}
-              className="flex items-center gap-2.5 sm:gap-3 text-left group focus:outline-hidden shrink-0 min-w-0"
+              className="flex items-center gap-2.5 sm:gap-3 text-left group focus:outline-hidden shrink-0"
               id="brand-logo-btn"
               aria-label="Arbab Mukhtiar - Home"
             >
@@ -177,18 +151,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <span className="text-base sm:text-lg font-bold tracking-tight text-slate-900 group-hover:text-emerald-700 transition-colors whitespace-nowrap">
                     Arbab Mukhtiar
                   </span>
-                  <span className="hidden xl:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 whitespace-nowrap">
+                  <span className="hidden 2xl:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 whitespace-nowrap">
                     Murree Brewery QA
                   </span>
                 </div>
-                <p className="text-[11px] sm:text-xs text-slate-500 font-medium tracking-normal truncate max-w-[170px] sm:max-w-[260px] lg:max-w-none">
+                <p className="text-[11px] sm:text-xs text-slate-500 font-medium tracking-normal whitespace-nowrap">
                   BS Food Science & Tech • QA Specialist
                 </p>
               </div>
             </button>
 
-            {/* Desktop Navigation Links (Visible on LG and larger screens, tight and non-wrapping) */}
-            <nav className="hidden lg:flex items-center space-x-1 xl:space-x-1.5 min-w-0" aria-label="Main Navigation">
+            {/* Desktop Navigation Links - Clean, evenly spaced, no wrapping */}
+            <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 min-w-0" aria-label="Main Navigation">
               {flatNavLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive = activeTab === link.id;
@@ -197,76 +171,38 @@ export const Navbar: React.FC<NavbarProps> = ({
                     key={link.id}
                     id={`nav-link-${link.id}`}
                     onClick={() => handleNavClick(link.id)}
-                    className={`flex items-center gap-1.5 px-2 xl:px-2.5 2xl:px-3 py-1.5 rounded-lg text-xs xl:text-sm font-medium transition-all whitespace-nowrap ${
+                    className={`flex items-center gap-1.5 px-2.5 xl:px-3 py-2 rounded-xl text-xs xl:text-sm font-medium transition-all whitespace-nowrap ${
                       isActive
-                        ? "text-emerald-900 bg-emerald-100/70 font-semibold shadow-2xs"
+                        ? "text-emerald-900 bg-emerald-50 font-semibold border border-emerald-200/80 shadow-2xs"
                         : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
                     }`}
                   >
-                    <Icon className={`w-3.5 h-3.5 xl:w-4 xl:h-4 shrink-0 ${isActive ? "text-emerald-700" : "text-slate-400"}`} />
+                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? "text-emerald-700" : "text-slate-400"}`} />
                     <span>{link.label}</span>
                   </button>
                 );
               })}
             </nav>
 
-            {/* Desktop Right Action Bar */}
-            <div className="hidden lg:flex items-center space-x-2 xl:space-x-3 shrink-0">
-              {/* Quick Search Button */}
+            {/* Desktop Right Action Bar: Direct Contact CTA */}
+            <div className="hidden lg:flex items-center shrink-0">
+              {/* Contact Button */}
               <button
-                onClick={onOpenSearch}
-                id="global-search-btn"
-                className="flex items-center gap-2 px-2.5 py-1.5 text-xs text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200/90 whitespace-nowrap"
-                title="Search guides, SOPs, and resources (Shortcut: / or Ctrl+K)"
-                aria-label="Search repository"
-              >
-                <Search className="w-3.5 h-3.5 text-slate-400" />
-                <span className="hidden xl:inline">Search SOPs</span>
-                <kbd className="hidden 2xl:inline-block px-1.5 py-0.5 bg-slate-100 border border-slate-200 rounded-sm font-mono text-[10px] text-slate-400">⌘K</kbd>
-              </button>
-
-              {/* Client Portal Button */}
-              <button
-                onClick={onOpenPortal}
-                id="client-portal-btn"
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs xl:text-sm font-semibold transition-all shadow-xs whitespace-nowrap ${
-                  activeTab === "portal" || isLoggedIn
-                    ? "bg-emerald-700 text-white hover:bg-emerald-800"
-                    : "bg-slate-900 text-white hover:bg-slate-800"
+                onClick={() => handleNavClick("contact")}
+                id="nav-contact-btn"
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs xl:text-sm font-semibold transition-all shadow-xs whitespace-nowrap ${
+                  activeTab === "contact"
+                    ? "bg-emerald-800 text-white shadow-emerald-700/20"
+                    : "bg-emerald-700 text-white hover:bg-emerald-800 active:scale-98"
                 }`}
               >
-                <Lock className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
-                <span>{isLoggedIn ? "Portal (Active)" : "Client Portal"}</span>
+                <Mail className="w-4 h-4 text-emerald-100 shrink-0" />
+                <span>Contact</span>
               </button>
             </div>
 
             {/* Mobile / Tablet Right Controls */}
-            <div className="flex items-center gap-1.5 sm:gap-2 lg:hidden shrink-0">
-              {/* Mobile Search Button */}
-              <button
-                onClick={onOpenSearch}
-                id="mobile-search-btn"
-                className="w-10 h-10 flex items-center justify-center text-slate-600 hover:text-emerald-800 hover:bg-slate-100 rounded-xl transition-colors border border-transparent active:scale-95"
-                aria-label="Search guides and SOPs"
-              >
-                <Search className="w-5 h-5" />
-              </button>
-
-              {/* Mobile Portal Pill */}
-              <button
-                onClick={onOpenPortal}
-                id="mobile-portal-btn"
-                className={`flex items-center gap-1 px-2.5 sm:px-3 py-2 rounded-xl text-xs font-semibold transition-colors active:scale-95 ${
-                  activeTab === "portal" || isLoggedIn
-                    ? "bg-emerald-800 text-white"
-                    : "bg-emerald-700 text-white hover:bg-emerald-800"
-                }`}
-                aria-label="Access Client Portal"
-              >
-                <Lock className="w-3.5 h-3.5 text-emerald-200" />
-                <span className="hidden sm:inline">Portal</span>
-              </button>
-
+            <div className="flex items-center lg:hidden shrink-0">
               {/* Mobile Menu Hamburger Toggle */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -323,23 +259,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 aria-label="Close menu"
               >
                 <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Mobile Search Trigger inside Drawer */}
-            <div className="p-4 border-b border-slate-100 bg-white">
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenSearch();
-                }}
-                className="w-full flex items-center gap-2.5 px-3.5 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-500 transition-colors text-left"
-              >
-                <Search className="w-4 h-4 text-emerald-700" />
-                <span className="flex-1">Search SOPs, HACCP guides, calculators...</span>
-                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                  Search
-                </span>
               </button>
             </div>
 
@@ -402,12 +321,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  onOpenPortal();
+                  handleNavClick("contact");
                 }}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-700 text-white font-semibold text-sm shadow-sm hover:bg-emerald-800 active:scale-98 transition-all"
               >
-                <Lock className="w-4 h-4 text-emerald-200" />
-                <span>{isLoggedIn ? "Open Client Portal Dashboard" : "Access Secure Client Portal"}</span>
+                <Mail className="w-4 h-4 text-emerald-200" />
+                <span>Contact & Inquiries</span>
               </button>
 
               {/* Quick Direct Info Bar */}

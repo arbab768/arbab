@@ -13,7 +13,8 @@ import {
   Camera,
   Maximize2,
   RefreshCw,
-  Check
+  Check,
+  Calculator
 } from "lucide-react";
 import { ARBAB_PROFILE } from "../data/profileData";
 
@@ -107,10 +108,10 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate, onOpenConsultation }) =>
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#e2e8f015_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f015_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-start">
           
-          {/* Left Column: Headline, Bio, Credentials & CTAs */}
-          <div className="lg:col-span-7 space-y-6 text-left">
+          {/* Left Column: Headline, Bio, Credentials & CTAs - Starts aligned at the top with image */}
+          <div className="lg:col-span-7 space-y-6 text-left pt-0.5">
             
             {/* Badges / Pill Tags */}
             <div className="flex flex-wrap items-center gap-2.5">
@@ -184,12 +185,12 @@ export const Hero: React.FC<HeroProps> = ({ onNavigate, onOpenConsultation }) =>
               </button>
 
               <button
-                onClick={() => onNavigate("resources")}
-                id="hero-download-res-btn"
+                onClick={() => onNavigate("tools")}
+                id="hero-tools-btn"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-3.5 rounded-xl text-slate-600 hover:text-emerald-800 font-medium text-sm transition-colors border border-transparent hover:border-slate-200"
               >
-                <Download className="w-4 h-4 text-emerald-600" />
-                <span>Download SOP Library</span>
+                <Calculator className="w-4 h-4 text-emerald-600" />
+                <span>QA Calculators & Tools</span>
               </button>
             </div>
 

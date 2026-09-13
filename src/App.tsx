@@ -10,12 +10,10 @@ import { QAToolsSection } from "./components/QAToolsSection";
 import { ClientPortal } from "./components/ClientPortal";
 import { ContactSection } from "./components/ContactSection";
 import { Footer } from "./components/Footer";
-import { SearchModal } from "./components/SearchModal";
 import { UserAccount } from "./types";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>("home");
-  const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<UserAccount | null>(() => {
     const saved = localStorage.getItem("arbab_portal_user");
     if (saved) {
@@ -66,13 +64,9 @@ export default function App() {
   };
 
   const handleOpenConsultation = () => {
-    setActiveTab("portal");
-    window.location.hash = "portal";
+    setActiveTab("contact");
+    window.location.hash = "contact";
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleSelectSearchResult = (tab: string) => {
-    handleTabChange(tab);
   };
 
   return (
@@ -82,9 +76,6 @@ export default function App() {
       <Navbar
         activeTab={activeTab}
         setActiveTab={handleTabChange}
-        onOpenSearch={() => setSearchOpen(true)}
-        isLoggedIn={!!currentUser}
-        onOpenPortal={() => handleTabChange("portal")}
       />
 
       {/* Main Content View Container */}
@@ -213,13 +204,6 @@ export default function App() {
 
       {/* Global Footer */}
       <Footer onNavigate={handleTabChange} />
-
-      {/* Global Search Modal */}
-      <SearchModal
-        isOpen={searchOpen}
-        onClose={() => setSearchOpen(false)}
-        onSelectResult={handleSelectSearchResult}
-      />
 
     </div>
   );

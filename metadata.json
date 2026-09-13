@@ -1,6 +1,8 @@
 {
   "name": "Arbab Mukhtiar | Food Science & Quality Assurance Specialist",
-  "description": "Portfolio, food safety & nutrition guides, downloadable QA resource library, and client consultation portal of Arbab Mukhtiar (BS Food Science & Technology, QA Officer at Murree Brewery).",
+  "description": "Portfolio, food safety & nutrition guides, QA engineering calculators, and professional advisory of Arbab Mukhtiar (BS Food Science & Technology, QA Officer at Murree Brewery).",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
