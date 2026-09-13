@@ -25,6 +25,8 @@ Hailing from the scenic valleys of Azad Kashmir, Pakistan, Arbab combines academ
   coreCompetencies: [
     "HACCP System Design & CCP Auditing",
     "ISO 22000:2018 & FSSC 22000 Compliance",
+    "ISO 9001 Quality Management System (QMS)",
+    "ISO 45001 Occupational Health & Safety (OHSAS)",
     "Beverage Line QA (Brix, pH, CO2, Turbidity)",
     "Microbiological Water & Product Testing",
     "CIP (Clean-In-Place) Validation & Chemistry",
@@ -76,6 +78,28 @@ export const CERTIFICATIONS: Certification[] = [
     category: "ISO & Standards",
     description: "Internal auditor and implementer credential covering Prerequisite Programs (PRPs), Operational PRPs (OPRPs), food defense, and management review protocols.",
     skills: ["Internal Auditing", "GAP Analysis", "PRP Verification", "Documented Information Control"],
+    status: "Verified"
+  },
+  {
+    id: "cert-iso-9001",
+    title: "ISO 9001:2015 Quality Management System (QMS)",
+    issuer: "Global Quality Management & Standardization Institute",
+    issueDate: "2024",
+    credentialId: "QMS-ISO9001-5230",
+    category: "ISO & Standards",
+    description: "Implementation, auditing, and continuous improvement of Quality Management Systems in industrial operations. Process mapping, risk-based thinking, non-conformance management (CAPA), and customer quality assurance.",
+    skills: ["QMS Auditing", "Risk-Based Process Design", "CAPA Implementation", "Continuous Improvement (PDCA)"],
+    status: "Verified"
+  },
+  {
+    id: "cert-iso-45001",
+    title: "ISO 45001:2018 Occupational Health & Safety (OHSAS)",
+    issuer: "Industrial Health, Safety & Environmental Council",
+    issueDate: "2024",
+    credentialId: "OHSAS-ISO45K-8194",
+    category: "ISO & Standards",
+    description: "Occupational Health & Safety Assessment Series (OHSAS / ISO 45001). Hazard Identification and Risk Assessment (HIRA), chemical safety in CIP caustic/acid handling, PPE compliance, and plant emergency response protocols.",
+    skills: ["Hazard Identification (HIRA)", "Chemical Handling Safety", "Workplace Incident Prevention", "Emergency Preparedness"],
     status: "Verified"
   },
   {

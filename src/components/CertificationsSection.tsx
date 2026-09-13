@@ -65,7 +65,7 @@ Date of Verification: ${new Date().toLocaleDateString()}
               Education & Professional Certifications
             </h2>
             <p className="mt-3 text-base text-slate-600 leading-relaxed">
-              BS in Food Science and Technology complemented by rigorous multi-standard certifications in HACCP, ISO 22000, CIP sanitation, and sensory evaluation.
+              BS in Food Science and Technology complemented by rigorous certifications across ISO 9001 (QMS), ISO 45001 (OHSAS), ISO 22000 (FSMS), HACCP Level 3, and industrial CIP sanitation.
             </p>
           </div>
 
